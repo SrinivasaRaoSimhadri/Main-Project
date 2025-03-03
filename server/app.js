@@ -10,6 +10,8 @@ import ProfileRouter from "./routes/ProfileRouter.js";
 import ExperienceRouter from "./routes/ExperienceRouter.js";
 import NetworkRouter from "./routes/NetworkRouter.js";
 import OrganisationRouter from "./routes/OrganisationRouter.js";
+import userOrganisation  from  "./routes/UserOrganisation.js";
+import UserJobRouter from "./routes/UserJobRouter.js";
 
 const app = express();
 app.use(cors({
@@ -27,6 +29,8 @@ app.use("/profile", Authenticate, ProfileRouter);
 app.use("/experience", Authenticate, ExperienceRouter);
 app.use("/userNetwork", Authenticate, NetworkRouter);
 app.use("/organisation", Authenticate, OrganisationRouter);
+app.use("/userOrganisation", Authenticate, userOrganisation);
+app.use("/userJobs", Authenticate, UserJobRouter);
 
 
 const Start = async () => {

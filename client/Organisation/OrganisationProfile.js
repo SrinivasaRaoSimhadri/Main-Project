@@ -2,9 +2,11 @@ import {View, Text, Pressable, ScrollView, Image} from 'react-native';
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '../Utils/Constants';
+import { useNavigation } from '@react-navigation/native';
 
 export default function OrganisationProfile() {
 
+    const navigation = useNavigation();
     const [userData, setUserData] = useState({});
 
     const getUserProfile = async () => {
@@ -43,13 +45,14 @@ export default function OrganisationProfile() {
                 </View>
                 <View style = {{flexDirection: "row", marginTop: 10, gap: 10}}>
                     <Pressable onPress={
-                        () => props.navigation.navigate("ProfileForm")
+                        () => navigation.navigate("ProfileForm")
                     }>
                         <Text style = {{backgroundColor: "#00428B", color: "white", textAlign: "center", paddingVertical: 5, paddingHorizontal: 10, borderRadius: 5}}>Edit Profile</Text>
                     </Pressable>
-                    <Pressable onPress={async () => {
+                    <Pressable 
+                    onPress={async () => {
                         await AsyncStorage.clear();
-                        props.navigation.reset({
+                        navigation.reset({
                             index: 0,
                             routes: [{name: "Login"} ]
                         });

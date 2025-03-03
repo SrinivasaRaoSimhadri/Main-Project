@@ -1,14 +1,13 @@
-import { View, Text, ScrollView, Image, Pressable } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { View, Text, Image, Pressable, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
 import { BASE_URL } from "../Utils/Constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Following(props) {
+export default function OrganisationExplore(props) {
 
-    const [following, setFollowing] = useState([]);
-    const [actualFollowing, setActualFollowing] = useState([]);
+    const [organisations, setOrganisations] = useState([]);
 
-    const getFollowing = async () => {
+    const getOrganisations = async () => {
         try {
             const userData = await AsyncStorage.getItem("userData");
             let token;
@@ -16,23 +15,21 @@ export default function Following(props) {
                 const parserUserData = JSON.parse(userData);
                 token = parserUserData?.data?.token;
             }
-            const response = await fetch(BASE_URL + "userNetwork/following", {
+            const response = await fetch(BASE_URL + "userOrganisation/getOrganisations", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + token
-                }  
-            })
+                    "authorization": "Bearer " + token
+                }
+            });
             const data = await response.json();
-            setFollowing(data?.following?.following);
-            setActualFollowing(data?.following?.following);
+            setOrganisations(data?.organisations);
         } catch (error) {
-            console.log("Error in getFollowing: ", error);
+            console.log("Error in getOrganisations: ", error);
         }
     }
 
-
-    const unfollow = async (userId) => {
+    const followOrganisation = async (userId) => {
         try {
             const userData = await AsyncStorage.getItem("userData");
             let token;
@@ -40,7 +37,7 @@ export default function Following(props) {
                 const parserUserData = JSON.parse(userData);
                 token = parserUserData?.data?.token;
             }
-            const response = await fetch(BASE_URL + "userNetwork/unfollow", {
+            const response = await fetch(BASE_URL + "userOrganisation/followOrganisation", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -49,27 +46,19 @@ export default function Following(props) {
                 body: JSON.stringify({
                     userId: userId
                 })
+
             });
-            if(response.status === 200) {
-                setFollowing(following.filter((f) => f?._id !== userId));
+            if(response.status === 200) {   
+                setOrganisations(organisations.filter((organisation) => organisation?._id !== userId));
             }
         } catch (error) {
-            console.log("Error in unfollow: ", error);
+            console.log("Error in followOrganisation: ", error);
         }
     }
 
-
     useEffect(() => {
-        getFollowing();
+        getOrganisations();
     },[]);
-
-    useEffect(() => {
-        setFollowing(actualFollowing.filter((follow) => {
-            return follow?.userName.toLowerCase().includes(props.searchInput.toLowerCase()) ||
-            follow?.email.toLowerCase().includes(props.searchInput.toLowerCase()) ||
-            follow?.about.toLowerCase().includes(props.searchInput.toLowerCase())
-        }));
-    },[props.searchInput]);
 
     return (
         <ScrollView
@@ -83,7 +72,7 @@ export default function Following(props) {
                 }}
             >
             {
-                    following?.length === 0?
+                    organisations.length === 0?
                     <Text 
                         style = {{
                             textAlign: "center", 
@@ -97,7 +86,7 @@ export default function Following(props) {
                         }}>
                             Nothing to show!
                         </Text>: 
-                    following?.map((follow, index) => {
+                    organisations?.map((organisation, index) => {
                         return (
                             <View 
                                 key = {index}
@@ -121,7 +110,7 @@ export default function Following(props) {
                                             width: 55, 
                                             borderRadius: 100
                                         }} 
-                                        source ={{uri: follow?.profileURL}} 
+                                        source ={{uri: organisation?.profileURL}} 
                                     />
                                     <View>
                                         <Text
@@ -130,7 +119,7 @@ export default function Following(props) {
                                                 fontSize: 18
                                             }}
                                         >
-                                            {follow?.userName}
+                                            {organisation?.userName}
                                         </Text>
                                         <Text
                                             style = {{
@@ -139,7 +128,7 @@ export default function Following(props) {
                                                 color: "gray"
                                             }}
                                         >
-                                            {follow?.email}
+                                            {organisation?.email}
                                         </Text>
                                         <Text
                                             style = {{
@@ -147,7 +136,7 @@ export default function Following(props) {
                                                 fontSize: 13
                                             }}
                                         >
-                                            {follow?.about}
+                                            {organisation?.about}
                                         </Text>
                                     </View>
                                 </View>
@@ -156,21 +145,8 @@ export default function Following(props) {
                                 >
                                     <Pressable 
                                         onPress={() => {
-                                            unfollow(follow?._id);
+                                            followOrganisation(organisation?._id);
                                         }} 
-                                        style = {{
-                                            backgroundColor: "orange", 
-                                            padding: 10, 
-                                            borderRadius: 5, 
-                                            alignItems: "center", 
-                                            marginBottom: 5, 
-                                            marginHorizontal: 5,
-                                            width: 160
-                                        }}>
-                                        <Text style = {{color: "white", fontSize: 15, fontWeight: "bold"}}>UnFollow</Text>
-                                    </Pressable>
-                                    <Pressable 
-                                        onPress={() => {}} 
                                         style = {{
                                             backgroundColor: "#00428B", 
                                             padding: 10, 
@@ -178,9 +154,9 @@ export default function Following(props) {
                                             alignItems: "center", 
                                             marginBottom: 5, 
                                             marginHorizontal: 5,
-                                            width: 160,
+                                            width: 328,
                                         }}>
-                                        <Text style = {{color: "white", fontSize: 15, fontWeight: "bold"}}>Message</Text>
+                                        <Text style = {{color: "white", fontSize: 15, fontWeight: "bold"}}>Follow</Text>
                                     </Pressable>
                                 </View>
                             </View>
@@ -188,7 +164,6 @@ export default function Following(props) {
                     })
                 }
            </View>
-           <View style = {{marginVertical: 90}}/>
         </ScrollView>
     )
-};
+}

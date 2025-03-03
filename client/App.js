@@ -25,6 +25,7 @@ import Network from './NetworkScreens/Network';
 import Organisation from './Organisations/Organisation';
 import Job from './Jobs/Job';
 import Groups from './GroupScreens/Groups.js';
+import ExamHosting from './Exam/ExamHosting.js';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -131,6 +132,7 @@ export default function App() {
             <Stack.Screen name="ProfileForm" options={{headerShown: false}} component={ProfileForm}/>
             <Stack.Screen name="ViewExperience" options={{headerShown: false}} component={ViewExperience}/>
             <Stack.Screen name="OrganisationBottomTabs" options={{ headerShown: false }} component={OrganisationBottomTabs} />
+            <Stack.Screen name="ExamHosting" options={{ headerShown: false }} component={ExamHosting} />
           </Stack.Navigator>
         </SafeAreaView>
       </NavigationContainer>

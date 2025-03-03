@@ -55,3 +55,10 @@ export const validatePostJob = (req) => {
         throw new Error("Fill every detail!");
     }
 }
+
+export const jobApplyDetails = (req) => {
+    const {jobPostId, status, marks, scored, cutOff} = req.body;
+    if(!jobPostId?.trim() || !status?.trim() || !marks?.trim() || !scored?.trim() || !cutOff?.trim()) {
+        throw new Error("Fill every detail!");
+    }
+}
