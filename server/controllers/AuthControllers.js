@@ -24,7 +24,7 @@ export const Login = async (req, res) => {
         const token = await isExistingUser.get_JWT();
         return res.status(200).json({
             "message": "Loggedin successfully",
-            "data": {email, token, isOrganisation: isExistingUser.isOrganisation}
+            "data": {email, token, isOrganisation: isExistingUser.isOrganisation, _id: isExistingUser._id, profileURL: isExistingUser.profileURL}
         })
    } catch (error) {
         return res.status(400).json({

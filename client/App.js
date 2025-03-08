@@ -26,6 +26,8 @@ import Organisation from './Organisations/Organisation';
 import Job from './Jobs/Job';
 import Groups from './GroupScreens/Groups.js';
 import ExamHosting from './Exam/ExamHosting.js';
+import Chat from './GroupScreens/Chat.js';
+import GroupChat from './GroupScreens/GroupChat.js';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -133,6 +135,8 @@ export default function App() {
             <Stack.Screen name="ViewExperience" options={{headerShown: false}} component={ViewExperience}/>
             <Stack.Screen name="OrganisationBottomTabs" options={{ headerShown: false }} component={OrganisationBottomTabs} />
             <Stack.Screen name="ExamHosting" options={{ headerShown: false }} component={ExamHosting} />
+            <Stack.Screen name="Chat" options={{ headerShown: false }} component={Chat} />
+            <Stack.Screen name = "GroupChat" options = {{headerShown: false}} component = {GroupChat}/>
           </Stack.Navigator>
         </SafeAreaView>
       </NavigationContainer>

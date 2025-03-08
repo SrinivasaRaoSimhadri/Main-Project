@@ -2,11 +2,13 @@ import { View, Text, ScrollView, Image, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
 import { BASE_URL } from "../Utils/Constants";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Following(props) {
 
     const [following, setFollowing] = useState([]);
     const [actualFollowing, setActualFollowing] = useState([]);
+    const navigation = useNavigation();
 
     const getFollowing = async () => {
         try {
@@ -170,7 +172,14 @@ export default function Following(props) {
                                         <Text style = {{color: "white", fontSize: 15, fontWeight: "bold"}}>UnFollow</Text>
                                     </Pressable>
                                     <Pressable 
-                                        onPress={() => {}} 
+                                        onPress={() => {
+                                            navigation.navigate("Chat", {
+                                                userId: follow?._id,
+                                                userName: follow?.userName,
+                                                profileURL: follow?.profileURL,
+                                                email: follow?.email
+                                            });
+                                        }} 
                                         style = {{
                                             backgroundColor: "#00428B", 
                                             padding: 10, 

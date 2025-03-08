@@ -4,12 +4,14 @@ import { BASE_URL } from '../Utils/Constants.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { format } from "timeago.js";
 import TopUtils from '../Utils/TopUtils.js';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Home() {
 
     const [posts, setPosts] = useState([]);
     const [actualPosts, setActualPosts] = useState([]);
     const [searchInput, setSearchInput] = useState("");
+    const navigation = useNavigation();
 
     const getExperiencePosts = async () => {
         try {
@@ -95,7 +97,6 @@ export default function Home() {
                             }));
                         }} key={post._id} style={styles.postContainer}>
                             <Pressable onPress={() => {
-                                console.log("User Profile");
                             }} style = {{flexDirection: "row", gap: 10}}>
                                 <View>
                                     <Image style={{width: 50, height: 50, borderRadius: 100}} source={{uri: post?.user?.profileURL}} />

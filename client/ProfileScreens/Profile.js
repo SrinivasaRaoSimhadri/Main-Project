@@ -4,8 +4,11 @@ import ProfileView from "./ProfileView";
 import PostExperience from "../Experiencepost/PostExperience.js";
 import { useState, useEffect } from "react";
 import { BASE_URL } from "../Utils/Constants.js";
+import { useNavigation } from "@react-navigation/native";
 
-export default function Profile (props) {
+export default function Profile () {
+
+    const navigation = useNavigation();
 
     const [showPost, setShowPost] = useState(false);
     const [userData, setUserData] = useState({});
@@ -32,6 +35,7 @@ export default function Profile (props) {
     }
 
     useEffect(() => {
+
         getUserProfile();
     }, []);
 
@@ -39,7 +43,7 @@ export default function Profile (props) {
         <ScrollView showsVerticalScrollIndicator = {false} style = {{flex: 1}}>
             <View style = {{alignItems: "center"}}>
                 <View style = {{flexDirection: "row", alignItems: "center", gap: 110}}>
-                    <Pressable onPress={() => props.navigation.navigate("BottomTabs")}>
+                    <Pressable onPress={() => navigation.navigate("BottomTabs")}>
                         <Image style = {{width: 35, height: 35, marginTop: 20}} source = {require("../assets/back.png")}/>
                     </Pressable>
                     <Text style = {{fontWeight: "bold", fontSize: 20, marginTop: 20, marginRight: 25}}>Profile</Text>
@@ -50,28 +54,30 @@ export default function Profile (props) {
                     <Text style = {{fontWeight: "bold", fontSize: 20}}>{userData?.user?.userName}</Text>
                     <Text>{userData?.user?.email}</Text>
                 </View>
-                <View style = {{flexDirection: "row", marginTop: 10, gap: 10}}>
-                    <Pressable onPress={
-                        () => props.navigation.navigate("ProfileForm")
-                    }>
-                        <Text style = {{backgroundColor: "#00428B", color: "white", textAlign: "center", paddingVertical: 5, paddingHorizontal: 10, borderRadius: 5}}>Edit Profile</Text>
-                    </Pressable>
-                    <Pressable onPress={() => setShowPost(true)}>
-                        <Text style = {{backgroundColor: "green", color: "white", textAlign: "center", paddingVertical: 5, paddingHorizontal: 10, borderRadius: 5}}>Post</Text>
-                    </Pressable>
-                    <Pressable onPress={() => props.navigation.navigate("ViewExperience")}>
-                        <Text style = {{backgroundColor: "orange", color: "white", textAlign: "center", paddingVertical: 5, paddingHorizontal: 10, borderRadius: 5}}>Posts</Text>
-                    </Pressable>
-                    <Pressable onPress={async () => {
-                        await AsyncStorage.clear();
-                        props.navigation.reset({
-                            index: 0,
-                            routes: [{name: "Login"} ]
-                        });
-                    }}>
-                        <Text style = {{backgroundColor: "red", color: "white", textAlign: "center", paddingVertical: 5, paddingHorizontal: 10, borderRadius: 5}}>Logout</Text>
-                    </Pressable>
-                </View>
+                {
+                    <View style = {{flexDirection: "row", marginTop: 10, gap: 10}}>
+                        <Pressable onPress={
+                            () => navigation.navigate("ProfileForm")
+                        }>
+                            <Text style = {{backgroundColor: "#00428B", color: "white", textAlign: "center", paddingVertical: 5, paddingHorizontal: 10, borderRadius: 5}}>Edit Profile</Text>
+                        </Pressable>
+                        <Pressable onPress={() => setShowPost(true)}>
+                            <Text style = {{backgroundColor: "green", color: "white", textAlign: "center", paddingVertical: 5, paddingHorizontal: 10, borderRadius: 5}}>Post</Text>
+                        </Pressable>
+                        <Pressable onPress={() => navigation.navigate("ViewExperience")}>
+                            <Text style = {{backgroundColor: "orange", color: "white", textAlign: "center", paddingVertical: 5, paddingHorizontal: 10, borderRadius: 5}}>Posts</Text>
+                        </Pressable>
+                        <Pressable onPress={async () => {
+                            await AsyncStorage.clear();
+                            navigation.reset({
+                                index: 0,
+                                routes: [{name: "Login"} ]
+                            });
+                        }}>
+                            <Text style = {{backgroundColor: "red", color: "white", textAlign: "center", paddingVertical: 5, paddingHorizontal: 10, borderRadius: 5}}>Logout</Text>
+                        </Pressable>
+                    </View>
+                }
             </View>
             <ProfileView userData = {userData}/>
             {

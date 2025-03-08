@@ -43,7 +43,6 @@ export default function ProfileForm (props) {
     });
 
     const addDetails = async (details, url) => {
-        console.log(details, url);
         try {
             const userDetails = await AsyncStorage.getItem("userData");
             let token;
@@ -126,6 +125,64 @@ export default function ProfileForm (props) {
         } catch (error) {
             setError(true);
             setErrorMessage(error.message);
+        }
+    }
+
+    const deleteEducation = async (id) => {
+        console.log(id);
+        try {
+            const userDetails = await AsyncStorage.getItem("userData");
+            let token;
+            if(userDetails) {
+                const parserUserDetails = JSON.parse(userDetails);
+                token = parserUserDetails?.data?.token;
+            }
+            const response = await fetch(BASE_URL + "profile/DeleteEducationDetails", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": "Bearer " + token
+                },
+                body: JSON.stringify({id})
+            });
+            console.log(response.status);
+            if(response.status === 200) {
+                setEducationDetails(EducationDetails.filter((education) => education._id !== id));
+                Alert.alert("Success", "Deleted successfully");
+            } else {
+                Alert.alert("Error", "Could not delete the education detail");
+            }
+        } catch (error) {
+            Alert.alert("Error", "Could not delete the education detail");
+        }
+    }
+
+    const deleteExperience = async (id) => {
+        console.log(id);
+        try {
+            const userDetails = await AsyncStorage.getItem("userData");
+            let token;
+            if(userDetails) {
+                const parserUserDetails = JSON.parse(userDetails);
+                token = parserUserDetails?.data?.token;
+            }
+            const response = await fetch(BASE_URL + "profile/DeleteExperienceDetails", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": "Bearer " + token
+                },
+                body: JSON.stringify({id})
+            });
+            console.log(response.status);
+            if(response.status === 200) {
+                setExperienceDetails(ExperienceDetails.filter((experience) => experience._id !== id));
+                Alert.alert("Success", "Deleted successfully");
+            } else {
+                Alert.alert("Error", "Could not delete the experience detail");
+            }
+        } catch (error) {
+            Alert.alert("Error", "Could not delete the experience detail");
         }
     }
 
@@ -227,7 +284,7 @@ export default function ProfileForm (props) {
                                                                         },
                                                                         {
                                                                             text: "Delete", onPress: () => {
-                                                                                console.log("delelted");
+                                                                                deleteEducation(education._id);
                                                                             }
                                                                         }
                                                                     ]
@@ -456,7 +513,7 @@ export default function ProfileForm (props) {
                                                                         },
                                                                         {
                                                                             text: "Delete", onPress: () => {
-                                                                                console.log("delelted");
+                                                                                deleteExperience(experience._id);
                                                                             }
                                                                         }
                                                                     ]

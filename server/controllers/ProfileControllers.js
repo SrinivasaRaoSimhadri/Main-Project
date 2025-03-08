@@ -117,3 +117,41 @@ export const getDetails = async (req, res) => {
         });
     }
 }
+
+export const DeleteEducationDetails = async (req, res) => {
+    try {
+        const { id } = req.body;
+        const userEducation = await UserEducation.findByIdAndDelete(id);
+        if(!userEducation) {
+            return res.status(400).json({
+                "Error": "Education details not found"
+            });
+        }
+        return res.status(200).json({
+            "Success": "Education details deleted successfully"
+        });
+    } catch (error) {
+        return res.status(400).json({
+            "Error": error.message
+        });
+    }
+}
+
+export  const DeleteExperienceDetails = async (req, res) => {
+    try {
+        const { id } = req.body;
+        const userExperience = await UserExperience.findByIdAndDelete(id);
+        if(!userExperience) {
+            return res.status(400).json({
+                "Error": "Experience details not found"
+            });
+        }
+        return res.status(200).json({
+            "Success": "Experience details deleted successfully"
+        });
+    } catch (error) {
+        return res.status(400).json({
+            "Error": error.message
+        });
+    }
+}
