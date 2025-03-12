@@ -57,7 +57,9 @@ export default function Profile () {
                 {
                     <View style = {{flexDirection: "row", marginTop: 10, gap: 10}}>
                         <Pressable onPress={
-                            () => navigation.navigate("ProfileForm")
+                            () => navigation.navigate("ProfileForm", {
+                                userData
+                            })
                         }>
                             <Text style = {{backgroundColor: "#00428B", color: "white", textAlign: "center", paddingVertical: 5, paddingHorizontal: 10, borderRadius: 5}}>Edit Profile</Text>
                         </Pressable>

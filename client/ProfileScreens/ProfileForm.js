@@ -2,8 +2,10 @@ import { Alert, View, Text, Pressable, Image, Modal } from "react-native";
 import { useState } from "react";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import { BASE_URL } from "../Utils/Constants.js";
+import { useRoute } from "@react-navigation/native";
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
 export default function ProfileForm (props) {
 
@@ -41,6 +43,157 @@ export default function ProfileForm (props) {
     const [skills, setSkills] = useState({
         skill: ""
     });
+
+
+    const router = useRoute();
+    const { userData } = router.params;
+
+    const [about, setAbout] = useState(userData?.user?.about);
+    const [imagePath, setImagePath] = useState(userData?.user?.profileURL);
+
+    const pickImage = async () => {
+        // Request Permission
+        const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!granted) {
+            Alert.alert("Permission required", "You need to allow access to the gallery.");
+            return;
+        }
+    
+        // Open Image Picker
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaType,
+            quality: 1,
+        });
+    
+        if (!result.assets || result.assets.length === 0) {
+            console.log("No image selected");
+            return;
+        }
+    
+        console.log("Image URI:", result.assets[0].uri); // Debug the selected image
+        saveImage(result.assets[0].uri);
+    };
+
+
+    const saveImage = async (imageUri) => {
+        try {
+            if (!imageUri) {
+                console.log("❌ No image URI provided.");
+                return;
+            }
+
+            const extension = imageUri.split('.').pop();
+            const fileName = `image_${userData?.user?.email.split("@")[0]}.${extension}`;
+            const destinationPath = `${FileSystem.documentDirectory}${fileName}`;
+
+            console.log("🔹 Destination Path:", destinationPath);
+
+            // 🔍 Check if the file already exists
+            const fileInfo = await FileSystem.getInfoAsync(destinationPath);
+            if (fileInfo.exists) {
+                console.log("🗑️ Deleting old image...");
+                await FileSystem.deleteAsync(destinationPath, { idempotent: true });
+                console.log("✅ Old image deleted.");
+            } else {
+                console.log("ℹ️ No existing image found.");
+            }
+
+            // 📝 Save the new image
+            console.log("📂 Copying new image...");
+            await FileSystem.copyAsync({
+                from: imageUri,
+                to: destinationPath,
+            });
+
+            console.log("✅ Image saved successfully at:", destinationPath);
+
+            // 🔄 Update state and trigger upload
+            setImagePath(destinationPath);
+            postImage(destinationPath);
+            
+        } catch (error) {
+            console.log("❌ Error saving image:", error);
+        }
+    };
+
+
+
+    const updateAbout = async () => {
+        try {
+            const userDetails = await AsyncStorage.getItem("userData");
+            let token;
+            if (userDetails) {
+                const parserUserDetails = JSON.parse(userDetails);
+                token = parserUserDetails?.data?.token;
+            }
+            const response = await fetch(BASE_URL + "organisationProfileEdit/updateAbout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": "Bearer " + token
+                },
+                body: JSON.stringify({
+                    about
+                })
+            });
+            const data = await response.json();
+            console.log(data);
+            if(response.status === 200) {
+                Alert.alert("Success", "About updated successfully");
+            } else {
+                Alert.alert("Error", "Error in updating about");
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+
+    const postImage = async (destinationPath) => {
+        const userDetails = await AsyncStorage.getItem("userData");
+        let token;
+        if (userDetails) {
+            const parserUserDetails = JSON.parse(userDetails);
+            token = parserUserDetails?.data?.token;
+        }
+
+        const response = await fetch(BASE_URL + "organisationProfileEdit/updateImage", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+                destinationPath
+            })
+        });
+        const getUserProflile = async () => {
+            const userData = await AsyncStorage.getItem("userData");
+            if (userData) {  
+                try {
+                    let parserUserData = JSON.parse(userData);
+                    if (parserUserData?.data) {  
+                        parserUserData.data.profileURL = destinationPath;
+                        await AsyncStorage.setItem("userData", JSON.stringify(parserUserData));
+                        console.log("Profile URL updated successfully!");
+                    } else {
+                        console.warn("userData exists but 'data' field is missing.");
+                    }
+                } catch (error) {
+                    console.error("Error parsing userData:", error);
+                }
+            } else {
+                console.warn("No userData found in AsyncStorage.");
+            }
+        }
+        if(response.status === 200) {
+            getUserProflile();
+            Alert.alert("Success", "Image uploaded successfully");
+        } else {    
+            Alert.alert("Error", "Error in uploading image");
+        }
+    }
+
 
     const addDetails = async (details, url) => {
         try {
@@ -198,6 +351,38 @@ export default function ProfileForm (props) {
             >
                 <Image style = {{width: 35, height: 35}} source = {require("../assets/back.png")}/> 
             </Pressable>
+
+            <View
+                style={{ 
+                    flex: 1, 
+                }}
+            >
+                <View style={{alignItems: 'center'}}>
+                
+                    {
+                        imagePath && 
+                        <Image 
+                            style={{ 
+                                width: 150, 
+                                height: 150, 
+                                marginTop: 20,
+                                borderRadius: 100 
+                            }}
+                            source={{ uri: imagePath }}  
+                        />
+                    }
+                    <Pressable
+                        style={{ marginTop: 20, backgroundColor: '#00428B', padding: 5, borderRadius: 5, marginBottom: 10 }}
+                        onPress={ () => {
+                            pickImage();
+                        }}
+                    >
+                        <Text 
+                            style={{ color: 'white', fontSize: 15 }}
+                        >Change Image</Text>
+                    </Pressable>
+                </View>
+            </View>
             <View style = {{
                     backgroundColor: "lightgray", 
                     borderRadius:5, 
@@ -777,7 +962,43 @@ export default function ProfileForm (props) {
                     }
                 </View>
             </View>
-
+            <View
+                style = {{
+                    alignItems: 'center'
+                }}
+            >
+                <TextInput
+                    style={{ 
+                        width: '100%', 
+                        padding: 10, 
+                        marginVertical: 20, 
+                        borderColor: 'gray', 
+                        borderWidth: 1,
+                        borderRadius: 5,
+                        minHeight: 100,
+                        textAlignVertical: 'top',
+                    }}
+                    placeholder="About"
+                    multiline = {true}
+                    value={about}
+                    onChangeText={(text) => setAbout(text)}
+                />
+                <Pressable
+                    onPress={() => {
+                        updateAbout();
+                    }}
+                >
+                    <Text 
+                        style={{ 
+                            backgroundColor: '#00428B', 
+                            color: 'white', 
+                            padding: 10, 
+                            borderRadius: 5 
+                        }}
+                    >Update About</Text>
+                </Pressable>
+            </View>
+            <View style = {{marginBottom: 50}}/>
         </ScrollView>
     )
 }

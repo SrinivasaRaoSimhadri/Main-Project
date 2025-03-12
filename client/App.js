@@ -28,6 +28,7 @@ import Groups from './GroupScreens/Groups.js';
 import ExamHosting from './Exam/ExamHosting.js';
 import Chat from './GroupScreens/Chat.js';
 import GroupChat from './GroupScreens/GroupChat.js';
+import OrganisationProfileEdit from './Organisation/OrganisationProfileEdit.js';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -137,6 +138,7 @@ export default function App() {
             <Stack.Screen name="ExamHosting" options={{ headerShown: false }} component={ExamHosting} />
             <Stack.Screen name="Chat" options={{ headerShown: false }} component={Chat} />
             <Stack.Screen name = "GroupChat" options = {{headerShown: false}} component = {GroupChat}/>
+            <Stack.Screen name = "OrganisationProfileEdit" options = {{headerShown: false}} component = {OrganisationProfileEdit}/>
           </Stack.Navigator>
         </SafeAreaView>
       </NavigationContainer>

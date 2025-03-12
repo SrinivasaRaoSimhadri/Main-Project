@@ -10,6 +10,7 @@ export const getUserAppliedJobs = async (req, res) => {
                 select: "-password"
             }
         });
+        console.log("User applied jobs: ", userAppliesJobs);
         res.status(200).json({
             userAppliesJobs
         });
@@ -61,6 +62,9 @@ export const Apply = async (req, res) => {
             cutOff
         });
         await userAppliedJob.save();
+        const job = await JobPost.findById(jobPostId);
+        job.applications.push(req.user._id);
+        await job.save();
         res.status(200).json({
             message: "Applied successfully."
         });

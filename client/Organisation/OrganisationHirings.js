@@ -3,7 +3,8 @@ import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from "../Utils/Constants";
 import TopUtils from '../Utils/TopUtils';
-
+import { useFocusEffect } from '@react-navigation/native';
+import React from 'react';
 
 export default function OrganisationHirings() {
 
@@ -25,8 +26,7 @@ export default function OrganisationHirings() {
                 }
             });
             const data = await responce.json();
-            setJobs(data?.jobs)
-            console.log(data?.jobs[0].applications);
+            setJobs(data?.jobs);
         } catch (error) {
             console.log(error.message);
         }
@@ -58,9 +58,11 @@ export default function OrganisationHirings() {
         }
     }
 
-    useEffect(() => {
-        gethirings();
-    }, []);
+    useFocusEffect(
+        React.useCallback(() => {
+            gethirings();
+        }, [])
+    );
 
     return (
         <ScrollView
@@ -199,6 +201,23 @@ export default function OrganisationHirings() {
                                             {job.skills}
                                         </Text>
                                     </Text>
+                                    <Text
+                                        style = {{
+                                            fontSize: 13,
+                                            fontWeight: "bold",
+                                            marginTop: 10
+                                        }}
+                                    >
+                                        Cutoff:{"\n"} 
+                                        <Text
+                                            style = {{
+                                                fontWeight: "semibold",
+                                                fontSize: 14,
+                                            }}
+                                        >
+                                            {job.cutOffMarks}
+                                        </Text>
+                                    </Text>
                                     <View>
                                         <Text
                                             style = {{
@@ -228,36 +247,53 @@ export default function OrganisationHirings() {
                                                     <View
                                                         key = {index}
                                                         style = {{
-                                                            backgroundColor: "lightgray",
+                                                            backgroundColor: "white",
                                                             padding: 10,
                                                             borderRadius: 5,
-                                                            marginBottom: 10
+                                                            marginBottom: 10,
+                                                            elevation: 5,
+                                                            flexDirection: "row",
+                                                            gap: 10
                                                         }}
                                                     >
-                                                        <Text
-                                                            style = {{
-                                                                fontSize: 13,
-                                                                fontWeight: "bold"
-                                                            }}
-                                                        >
-                                                            {application.userName}
-                                                        </Text>
-                                                        <Text
-                                                            style = {{
-                                                                fontSize: 13,
-                                                                color: "gray"
-                                                            }}
-                                                        >
-                                                            {application.email}
-                                                        </Text>
-                                                        <Text
-                                                            style = {{
-                                                                fontSize: 13,
-                                                                color: "gray"
-                                                            }}
-                                                        >
-                                                            {application.about}
-                                                        </Text>
+
+                                                        <View>
+                                                            <Image
+                                                                style = {{
+                                                                    width: 45,
+                                                                    height: 45,
+                                                                    borderRadius: 100,
+                                                                    marginTop: 5
+                                                                }}
+                                                                source={{uri: application.profileURL}}
+                                                            /> 
+                                                        </View>
+                                                        <View>
+                                                            <Text
+                                                                style = {{
+                                                                    fontSize: 13,
+                                                                    fontWeight: "bold"
+                                                                }}
+                                                            >
+                                                                {application.userName}
+                                                            </Text>
+                                                            <Text
+                                                                style = {{
+                                                                    fontSize: 13,
+                                                                    color: "gray"
+                                                                }}
+                                                            >
+                                                                {application.email}
+                                                            </Text>
+                                                            <Text
+                                                                style = {{
+                                                                    fontSize: 13,
+                                                                    color: "gray"
+                                                                }}
+                                                            >
+                                                                {application.about}
+                                                            </Text>
+                                                        </View>
                                                     </View>
                                                 )
                                             })

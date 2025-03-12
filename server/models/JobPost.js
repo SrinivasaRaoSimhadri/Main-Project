@@ -101,7 +101,7 @@ const JobPostSchema = new mongoose.Schema({
                 return value > 0 && value <= this.questions.length;
             },
             message: function () {
-                return `Cutoff marks should be between 1 and ${this.questions.length}.`;
+                return `Cutoff marks should be between 1 and ${this.questions?.length}.`;
             }
         }  
     }

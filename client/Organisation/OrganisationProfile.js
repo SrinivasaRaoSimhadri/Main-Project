@@ -2,7 +2,8 @@ import {View, Text, Pressable, ScrollView, Image} from 'react-native';
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '../Utils/Constants';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React from 'react';
 
 export default function OrganisationProfile() {
 
@@ -30,9 +31,11 @@ export default function OrganisationProfile() {
         }
     }
 
-    useEffect(() => {
-        getUserProfile();
-    }, []);
+    useFocusEffect(
+        React.useCallback(() => {
+            getUserProfile();
+        }, [])
+    );
 
     return (
         <ScrollView showsVerticalScrollIndicator = {false} style = {{flex: 1}}>
@@ -45,7 +48,9 @@ export default function OrganisationProfile() {
                 </View>
                 <View style = {{flexDirection: "row", marginTop: 10, gap: 10}}>
                     <Pressable onPress={
-                        () => navigation.navigate("ProfileForm")
+                        () => navigation.navigate("OrganisationProfileEdit", {
+                            userData
+                        })
                     }>
                         <Text style = {{backgroundColor: "#00428B", color: "white", textAlign: "center", paddingVertical: 5, paddingHorizontal: 10, borderRadius: 5}}>Edit Profile</Text>
                     </Pressable>
@@ -60,7 +65,7 @@ export default function OrganisationProfile() {
                         <Text style = {{backgroundColor: "red", color: "white", textAlign: "center", paddingVertical: 5, paddingHorizontal: 10, borderRadius: 5}}>Logout</Text>
                     </Pressable>
                 </View>
-                <Text style = {{padding: 10, textAlign: "center", marginTop: 10}}>
+                <Text style = {{padding: 10, marginTop: 10}}>
                     {userData?.user?.about}
                 </Text>
             </View>

@@ -24,6 +24,7 @@ export default function UserAppliedJobs() {
                 }
             })
             const data = await response.json();
+            console.log("Data: ", data?.userAppliesJobs);
             setUserAppliedJobs(data?.userAppliesJobs);
         } catch (error) {
             console.log("Error in getExplore: ", error.message);
@@ -83,7 +84,7 @@ export default function UserAppliedJobs() {
                                                     width: 55, 
                                                     borderRadius: 100
                                                 }} 
-                                                source ={{uri: job.jobApplied.postedBy.profileURL}} 
+                                                source ={{uri: job.jobApplied?.postedBy?.profileURL}} 
                                             />
                                             <View>
                                                 <Text
@@ -92,7 +93,7 @@ export default function UserAppliedJobs() {
                                                         fontSize: 18
                                                     }}
                                                 >
-                                                    {job.jobApplied.postedBy.userName}
+                                                    {job.jobApplied?.postedBy?.userName}
                                                 </Text>
                                                 <Text
                                                     style = {{
@@ -101,7 +102,7 @@ export default function UserAppliedJobs() {
                                                         color: "gray"
                                                     }}
                                                 >
-                                                    {job.jobApplied.postedBy.email}
+                                                    {job.jobApplied?.postedBy?.email}
                                                 </Text>
                                                 <Text
                                                     style = {{
@@ -109,7 +110,7 @@ export default function UserAppliedJobs() {
                                                         fontSize: 13
                                                     }}
                                                 >
-                                                    {job.jobApplied.role}
+                                                    {job.jobApplied?.role}
                                                 </Text>
                                                 <Text
                                                     style = {{

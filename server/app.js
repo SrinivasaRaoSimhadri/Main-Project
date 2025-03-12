@@ -16,6 +16,7 @@ import OrganisationRouter from "./routes/OrganisationRouter.js";
 import userOrganisation  from  "./routes/UserOrganisation.js";
 import UserJobRouter from "./routes/UserJobRouter.js";
 import ChatRouter from "./routes/ChatRouter.js";
+import OrganisationProfileEditRouter from "./routes/OrganisationProfileEditRouter.js";
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use("/organisation", Authenticate, OrganisationRouter);
 app.use("/userOrganisation", Authenticate, userOrganisation);
 app.use("/userJobs", Authenticate, UserJobRouter);
 app.use("/chat", Authenticate, ChatRouter);
+app.use("/organisationProfileEdit", Authenticate, OrganisationProfileEditRouter);
 
 const server = http.createServer(app);
 initializeSocket(server);

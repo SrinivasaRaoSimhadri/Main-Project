@@ -80,7 +80,7 @@ export const Explore = async (req, res) => {
             await UserFollowing.create({ user: req.user._id, following: [] });
         }
         const followingTo = following.following;
-        let explore = users.filter(user => user._id.toString() !== req.user._id.toString() && !followingTo.includes(user._id.toString()));
+        let explore = users.filter(user => user._id.toString() !== req.user._id.toString() && !followingTo.includes(user._id.toString()) && user.isOrganisation === false);
         return res.status(200).json({
             message: "Users fetched successfully",
             explore

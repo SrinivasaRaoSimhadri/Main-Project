@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema({
     },
     profileURL: {
         type: String,
-        default: "https://images.hindustantimes.com/img/2024/07/26/550x309/Sundeep_Kishan_restaurant_reaction_1721983979667_1721984007571.jpg"
+        default: "https://img.favpng.com/6/14/19/computer-icons-user-profile-icon-design-png-favpng-vcvaCZNwnpxfkKNYzX3fYz7h2.jpg"
     },
     resumeURL: {
         type: String

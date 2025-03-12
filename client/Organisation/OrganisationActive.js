@@ -3,6 +3,8 @@ import { BASE_URL } from '../Utils/Constants';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TopUtils from '../Utils/TopUtils';
+import React from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function OrganisationActive() {
 
@@ -40,6 +42,10 @@ export default function OrganisationActive() {
         try {
             Alert.alert("Warning", "Are you sure you want to close applications?", [
                 {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
                     text: "Yes",
                     onPress: async () => {
                         const userData = await AsyncStorage.getItem("userData");
@@ -65,16 +71,19 @@ export default function OrganisationActive() {
                             getPosts();
                         }
                     }
-                },
+                }
             ])
         } catch (error) {
             console.log(error.message);
         }
     }
 
-    useEffect(() => {
-        getPosts();
-    },[]);
+    useFocusEffect(
+        React.useCallback(() => {
+            getPosts();
+        }, [])
+    );
+
 
     return (
         <ScrollView
@@ -83,7 +92,7 @@ export default function OrganisationActive() {
                 padding: 1
             }}
         >
-            <TopUtils />
+            <TopUtils  />
             {
                 jobs.length === 0? <Text 
                 style = {{

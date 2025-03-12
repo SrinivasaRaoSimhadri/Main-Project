@@ -116,6 +116,7 @@ export default function YourGroups() {
                     })
                 }
             </View>
+            <View style = {{marginBottom: 200}}/>
         </ScrollView>
     )
 }
